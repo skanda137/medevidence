@@ -4,6 +4,7 @@ import "dotenv/config";
 import { diseasesRouter } from "./routes/diseases.js";
 import { chatRouter } from "./routes/chat.js";
 import { guidelinesRouter } from "./routes/guidelines.js";
+import { drugsRouter } from "./routes/drugs.js";
 
 const app = express();
 app.use(cors());
@@ -14,6 +15,7 @@ app.get("/health", (_req, res) => res.json({ ok: true }));
 app.use("/diseases", diseasesRouter);
 app.use("/chat", chatRouter);
 app.use("/guidelines", guidelinesRouter);
+app.use("/drugs", drugsRouter);
 
 const port = process.env.PORT ? Number(process.env.PORT) : 4000;
 app.listen(port, () => {

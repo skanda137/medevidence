@@ -20,9 +20,17 @@ Health check: `GET http://localhost:4000/health`
 - `GET /diseases?search=` — list/search
 - `GET /diseases/:slug` — full page: guideline chunks, trials, textbook chapter refs
 - `POST /diseases` — create (admin tool target)
+- `GET /drugs?search=` / `GET /drugs/:id` / `POST /drugs` — structured drug data,
+  including dosing. This is the *only* place dosing numbers should come from — see
+  `src/services/generate.ts` rule 5: the chat assistant is instructed to never state a
+  dose itself, only to point here. Fix a wrong dose in one place, not in a prompt.
 - `POST /chat/ask` — RAG chat: `{ question, diseaseId? }` → grounded, cited answer
 - `GET /guidelines/compare/:diseaseSlug` — recommendations grouped by society, for the
   Guideline Comparison Engine page
+
+Note: `drugs.pregnancy_category` was renamed to `pregnancy_lactation_summary` in
+`0002_drug_schema_fixes.sql` — the FDA retired the A/B/C/D/X letter system in 2015, so
+this is a narrative field, not an enum.
 
 ## How textbook PDFs are handled (read this before ingesting anything)
 
@@ -78,8 +86,8 @@ try to route around that with chunking tricks.
 - Auth middleware (Clerk) — currently every route is open; add a middleware in
   `src/middleware/` that populates `req.user` from the Clerk session before any of this
   goes near production data.
-- `drugs` and `calculators` routes (schema exists, routes don't yet — same CRUD pattern
-  as `diseases.ts`).
+- `calculators` routes (schema exists, routes don't yet — same CRUD pattern
+  as `diseases.ts` / `drugs.ts`).
 - Re-ranking step in retrieval once you have enough guideline volume that top-k cosine
   similarity alone gets noisy.
 - Rate limiting on `/chat/ask` (LLM calls are your most expensive path).

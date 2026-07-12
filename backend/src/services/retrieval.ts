@@ -5,7 +5,7 @@ export interface RetrievedChunk {
   id: string;
   kind: "guideline" | "trial";
   text: string;
-  source: string;       // e.g. "ESC 2025 Heart Failure Guideline"
+  source: string;       // e.g. "ESC 2021 (2023 focused update) — Heart Failure Guideline"
   evidenceGrade: string | null;
   similarity: number;
 }
